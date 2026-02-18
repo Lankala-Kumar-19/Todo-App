@@ -5,6 +5,9 @@ const router = express.Router();
 const userController = require('../controllers/userController')
 const authController = require('../controllers/authController')
 const authMiddleware = require('../middlewares/authMiddleware')
+
+
+//routes working
 router.post('/register',userController.createUser);
 router.post('/login',authController.login);
 

@@ -19,31 +19,31 @@ const createTask = async (userId, taskData) => {
 const getTasks = async (userId, query) => {
   const { sort } = query;
 
-  let tasks = await Task.find({ user: userId });
+  let sortOption = {};
 
-  if (sort === "mixed") {
-    tasks = tasks.sort((a, b) => {
-
-      // 1️⃣ Incomplete first
-      if (a.completed !== b.completed) {
-        return a.completed ? 1 : -1;
-      }
-
-      // 2️⃣ Higher priority first
-      const priorityDiff =
-        getPriorityValue(b.priority) - getPriorityValue(a.priority);
-
-      if (priorityDiff !== 0) {
-        return priorityDiff;
-      }
-
-      // 3️⃣ Earlier deadline first
-      return new Date(a.deadline) - new Date(b.deadline);
-    });
+  if (sort === "deadline") {
+    sortOption = { deadline: 1 };
   }
 
-  return tasks;
+  if (sort === "priority") {
+    sortOption = { priority: -1 };
+  }
+
+  if (sort === "created") {
+    sortOption = { createdAt: -1 };
+  }
+
+  if (sort === "mixed") {
+    sortOption = {
+      completed: 1,
+      priority: -1,
+      deadline: 1,
+    };
+  }
+
+  return await Task.find({ user: userId }).sort(sortOption);
 };
+
 
 
 /**
